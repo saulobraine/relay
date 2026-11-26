@@ -124,21 +124,3 @@ it('protege a conta escolhida no Relay mesmo se o Maestri não gravar o preset',
   }))
 })
 
-it('restringe a checagem e auto-failover ao maestro quando monitorOnlyMaestro está ativo', async () => {
-  await scheduler.updateConfig({ monitorOnlyMaestro: true })
-  mocks.checkTerminal.mockClear()
-  mocks.checkTerminal.mockResolvedValue('? for shortcuts  Gemini 3 Pro · high')
-
-  await scheduler.pollTerminals(false)
-  const snap = scheduler.getSnapshot()
-  const agent = snap.terminals.find(({ id }) => id === 'segundo-agent')
-  expect(agent).toMatchObject({ health: 'UNKNOWN', inspectionLatencyMs: null })
-
-  // Auto failover ignores non-managers
-  mocks.fetchAllLiveAccountUsages.mockClear()
-  mocks.executeTerminalFailover.mockClear()
-  await scheduler.pollTerminals(true)
-  expect(mocks.executeTerminalFailover).not.toHaveBeenCalled()
-})
-
-

@@ -379,7 +379,6 @@ export default function App() {
             terminals={snapshot.terminals}
             accounts={snapshot.accounts}
             autoFailover={snapshot.config.autoFailover}
-            monitorOnlyMaestro={snapshot.config.monitorOnlyMaestro}
             terminalPollIntervalSeconds={snapshot.config.terminalPollIntervalSeconds}
             lastFailoverDurationMs={snapshot.lastFailoverDurationMs}
             scanWarning={snapshot.terminalScanWarning}
