@@ -367,7 +367,7 @@ export class RelayScheduler {
           let inspectionLatencyMs: number | null = null
 
           const inspectionContext = t.id === manager?.id ? managerContext : isReachable ? ctx : null
-          if (inspectionContext) {
+          if (inspectionContext && (!this.config.monitorOnlyMaestro || t.isManager)) {
             try {
               const startedAt = performance.now()
               const buffer = await checkTerminal(inspectionContext, t.name)
@@ -410,6 +410,7 @@ export class RelayScheduler {
   }
   private async evaluateAutoFailover(): Promise<void> {
     if (!this.pipePath) return
+    if (this.config.monitorOnlyMaestro) return
 
     const accountMap = new Map(this.accounts.map((a) => [a.id.toLowerCase(), a]))
 

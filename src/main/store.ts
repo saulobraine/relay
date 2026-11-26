@@ -7,6 +7,7 @@ const DEFAULT_CONFIG: RelayConfig = {
   autoFailover: true,
   autoRebalance: false,
   onlyActiveWorkspace: false,
+  monitorOnlyMaestro: true,
   maestroDedicatedAccountId: null,
   excludeMaestroFromPool: true,
   quotaTimeoutSeconds: 20,

@@ -12,6 +12,7 @@ export const MOCK_SNAPSHOT: RelaySnapshot = {
     autoFailover: true,
     autoRebalance: false,
     onlyActiveWorkspace: false,
+    monitorOnlyMaestro: true,
     maestroDedicatedAccountId: '42381C93-DBCD-4ED3-B72A-0694D839E2B1',
     excludeMaestroFromPool: true,
     quotaTimeoutSeconds: 20,

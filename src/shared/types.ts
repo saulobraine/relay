@@ -82,6 +82,7 @@ export interface RelayConfig {
   autoFailover: boolean
   autoRebalance: boolean
   onlyActiveWorkspace: boolean
+  monitorOnlyMaestro: boolean
   maestroDedicatedAccountId: string | null
   excludeMaestroFromPool: boolean
   quotaTimeoutSeconds: number

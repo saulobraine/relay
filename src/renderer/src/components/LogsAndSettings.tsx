@@ -227,6 +227,12 @@ export function LogsAndSettings({
             checked={config.autoFailover}
             onChange={(val) => void onUpdateConfig({ autoFailover: val })}
           />
+          <ToggleRow
+            label="Monitorar somente o Maestro"
+            description="Restringe a checagem ativa de saúde ao Maestro e desativa o auto-failover automático dos especialistas (trocas manuais continuam disponíveis)"
+            checked={config.monitorOnlyMaestro}
+            onChange={(val) => void onUpdateConfig({ monitorOnlyMaestro: val })}
+          />
           <label className="field">
             Política de Roteamento de Reserva
             <select className="select-input" value={config.fallbackRoutingPolicy}
