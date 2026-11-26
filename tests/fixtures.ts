@@ -22,6 +22,7 @@ export function terminal(patch: Partial<MonitoredTerminal> = {}): MonitoredTermi
 
 export const config: RelayConfig = {
   autoFailover: true, autoRebalance: false, onlyActiveWorkspace: false,
+  monitorOnlyMaestro: false,
   maestroDedicatedAccountId: null, excludeMaestroFromPool: true,
   quotaTimeoutSeconds: 20, fallbackRoutingPolicy: 'score', min5hPercent: 12,
   minWeeklyPercent: 5, quotaPollIntervalSeconds: 180, terminalPollIntervalSeconds: 25,

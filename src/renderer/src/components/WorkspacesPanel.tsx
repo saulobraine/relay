@@ -17,6 +17,7 @@ interface Props {
   terminals: MonitoredTerminal[]
   accounts: AccountStatus[]
   autoFailover?: boolean
+  monitorOnlyMaestro?: boolean
   terminalPollIntervalSeconds?: number
   lastFailoverDurationMs: number | null
   scanWarning: string | null
@@ -72,6 +73,7 @@ export function WorkspacesPanel({
   terminals,
   accounts,
   autoFailover = true,
+  monitorOnlyMaestro = false,
   terminalPollIntervalSeconds = 25,
   lastFailoverDurationMs,
   scanWarning,
@@ -206,6 +208,9 @@ export function WorkspacesPanel({
             <span className="kpi-value-sub">poll {terminalPollIntervalSeconds}s</span>
           </div>
           <div className="kpi-footer-note">
+            {monitorOnlyMaestro && (
+              <span className="val-cyan" style={{ fontWeight: 600 }}>[Somente Maestro] </span>
+            )}
             {lastFailoverDurationMs === null
               ? 'Nenhuma troca medida nesta sessão'
               : `Última troca: ${(lastFailoverDurationMs / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 2 })} s`}
@@ -275,6 +280,12 @@ export function WorkspacesPanel({
           >
             Parados ({counts.stopped})
           </button>
+
+          {monitorOnlyMaestro && (
+            <span className="status-pill pill-active" title="Modo restrito: apenas o Maestro é monitorado">
+              Modo: Somente Maestro
+            </span>
+          )}
 
           {workspaces.length > 1 && (
             <select
@@ -360,6 +371,9 @@ export function WorkspacesPanel({
                           <span className="workspace-tag agent-tag">
                             {t.agentType === 'antigravity_cli' ? 'Antigravity CLI' : t.agentType === 'codex' ? 'Codex' : t.agentType}
                           </span>
+                          {monitorOnlyMaestro && !t.isManager && (
+                            <span className="workspace-tag muted" title="Monitoramento desativado para especialistas">Não monitorado</span>
+                          )}
                         </div>
                         {t.currentModel && (
                           <span className="terminal-current-model">
