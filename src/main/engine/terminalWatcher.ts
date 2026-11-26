@@ -1,16 +1,8 @@
 import { stripVTControlCharacters } from 'node:util'
 import type { TerminalHealthState, TerminalModel } from '../../shared/types'
 
-const RATE_LIMIT_PATTERNS = [
-  /rate limit/i,
-  /hit your limit/i,
-  /quota.*exhausted/i,
-  /quota.*exceeded/i,
-  /too many requests/i,
-  /\b429\b/,
-  /resource_exhausted/i,
-  /limit reached/i
-]
+const RATE_LIMIT_PATTERN =
+  /\b(?:HTTP\s*429|RESOURCE_EXHAUSTED|quota.*(?:exhausted|exceeded)|hit your quota limit|Too Many Requests)\b/i
 
 const AUTH_ERROR_PATTERNS = [
   /Eligibility check failed/i,
@@ -56,7 +48,7 @@ export function detectTerminalHealth(buffer: string): TerminalHealthState {
     return 'AUTH_ERROR'
   }
 
-  if (RATE_LIMIT_PATTERNS.some((re) => re.test(tail))) {
+  if (RATE_LIMIT_PATTERN.test(tail)) {
     return 'RATE_LIMITED'
   }
 

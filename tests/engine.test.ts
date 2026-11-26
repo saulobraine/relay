@@ -16,7 +16,8 @@ describe('cotas e roteamento', () => {
   })
 
   it('penaliza terminais ativos e desqualifica contas indisponíveis', () => {
-    expect(computeAccountScore(account({ activeTerminalCount: 2 }))).toBe(59.5)
+    expect(computeAccountScore(account({ activeTerminalCount: 2 }))).toBe(60)
+    expect(computeAccountScore(account({ activeTerminalCount: 10 }))).toBe(0)
     expect(computeAccountScore(account({ state: 'DRAINING' }))).toBe(-1)
   })
 
@@ -36,7 +37,13 @@ describe('cotas e roteamento', () => {
 describe('inspeção do terminal', () => {
   it.each([
     ['', 'STOPPED'], ['processando', 'ACTIVE'], ['>', 'IDLE'],
-    ['HTTP 429', 'RATE_LIMITED'], ['HTTP 429\nEligibility check failed', 'AUTH_ERROR']
+    ['HTTP 429', 'RATE_LIMITED'], ['HTTP 429\nEligibility check failed', 'AUTH_ERROR'],
+    ['Error: RESOURCE_EXHAUSTED', 'RATE_LIMITED'],
+    ['quota for 5h exhausted', 'RATE_LIMITED'],
+    ['quota limit exceeded', 'RATE_LIMITED'],
+    ['You hit your quota limit for today', 'RATE_LIMITED'],
+    ['429 Too Many Requests', 'RATE_LIMITED'],
+    ['port 4290 opened', 'ACTIVE']
   ])('classifica o buffer %j', (buffer, health) => {
     expect(detectTerminalHealth(buffer)).toBe(health)
   })

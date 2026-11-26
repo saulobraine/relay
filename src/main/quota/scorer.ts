@@ -38,8 +38,8 @@ export function computeAccountScore(params: {
   const w = params.geminiWeeklyRemaining ?? 100
 
   // 5h window recovers quickly so it carries higher routing weight; penalize stacked terminals
-  const rawScore = 0.65 * h + 0.35 * w - params.activeTerminalCount * 12
-  return Math.round(rawScore * 10) / 10
+  const score = 0.65 * h + 0.35 * w - params.activeTerminalCount * 12
+  return Math.max(0, Math.round(score))
 }
 
 export function pickBestAccount(
@@ -60,7 +60,9 @@ export function pickBestAccount(
         const difference = a.activeTerminalCount - b.activeTerminalCount
         if (difference !== 0) return difference
       }
-      return b.score - a.score
+      const scoreDiff = b.score - a.score
+      if (scoreDiff !== 0) return scoreDiff
+      return a.activeTerminalCount - b.activeTerminalCount
     })
 
   return candidates[0] ?? null
