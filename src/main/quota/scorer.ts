@@ -60,7 +60,9 @@ export function pickBestAccount(
         const difference = a.activeTerminalCount - b.activeTerminalCount
         if (difference !== 0) return difference
       }
-      return b.score - a.score
+      const scoreDiff = b.score - a.score
+      if (scoreDiff !== 0) return scoreDiff
+      return a.activeTerminalCount - b.activeTerminalCount
     })
 
   return candidates[0] ?? null
