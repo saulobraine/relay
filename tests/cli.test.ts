@@ -24,10 +24,17 @@ it('interpreta cotas da CLI e usa o timeout da configuração', async () => {
   expect(await fetchLiveAccountUsage(acc, 2, 12, 5, 37)).toMatchObject({
     state: 'DRAINING', gemini5hRemaining: 12, gemini5hResetsAt: null,
     geminiWeeklyRemaining: 85, thirdPartyWeeklyRemaining: 42, activeTerminalCount: 2,
-    plan: 'FREE'
+    plan: 'PRO'
   })
   expect(execFile).toHaveBeenCalledWith(expect.any(String), ['-p', '/usage', '--output-format', 'json'],
     expect.objectContaining({ timeout: 37000 }), expect.any(Function))
+})
+
+it('identifica plano FREE na CLI quando possui apenas gemini-weekly e sem modelos Pro', async () => {
+  output(JSON.stringify({ command: { data: { groups: [
+    { name: 'Gemini Models', buckets: [{ id: 'gemini-weekly', remaining_fraction: 0.9 }] }
+  ] } } }))
+  expect(await fetchLiveAccountUsage(acc, 0, 12, 5, 20)).toMatchObject({ plan: 'FREE' })
 })
 
 it('identifica plano PRO na CLI quando buckets de terceiros possuem reset time ativo', async () => {

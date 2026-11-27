@@ -116,6 +116,7 @@ export async function readCachedUsageStatus(
       minWeeklyPercent
     })
 
+    const hasGemini5h = Boolean(g5h)
     const hasActive3pWindow = Boolean(
       thirdPartyMeter?.windows?.some((w) => {
         const hasValidReset = Boolean(w.resetsAt && !w.resetsAt.startsWith('1970-01-01'))
@@ -127,7 +128,7 @@ export async function readCachedUsageStatus(
     const explicitPlan = (p as any)?.plan
       ? ((p as any).plan.toUpperCase() as AccountPlan)
       : null
-    const plan: AccountPlan = explicitPlan ?? (hasActive3pWindow ? 'PRO' : 'FREE')
+    const plan: AccountPlan = explicitPlan ?? (hasGemini5h || hasActive3pWindow ? 'PRO' : 'FREE')
 
     return {
       id: acc.id,
@@ -231,6 +232,7 @@ export async function fetchLiveAccountUsage(
     const geminiWeeklyRemaining = normalizePercent(gWeekly?.remaining_fraction)
     const gemini5hRemaining = g5h ? normalizePercent(g5h.remaining_fraction) : 100
 
+    const hasGemini5hBucket = Boolean(g5h)
     const hasActive3pBucket = Boolean(
       tpGroup?.buckets &&
       tpGroup.buckets.length > 0 &&
@@ -241,10 +243,20 @@ export async function fetchLiveAccountUsage(
       })
     )
 
+    const proModelsRegex = /Gemini 4|Neon|Carbon|Argon|Orchestrator|5\.5/i
+    const hasProModelDescription = Boolean(
+      groups.some((g) => {
+        const desc = (g as any).description ?? ''
+        const name = g.name ?? ''
+        return proModelsRegex.test(desc) || proModelsRegex.test(name)
+      }) || proModelsRegex.test(stdout)
+    )
+
     const explicitLivePlan = ((data as any)?.plan || (data as any)?.command?.data?.plan)
       ? (String((data as any).plan || (data as any).command?.data?.plan).toUpperCase() as AccountPlan)
       : null
-    const plan: AccountPlan = explicitLivePlan ?? (hasActive3pBucket ? 'PRO' : 'FREE')
+    const isPro = hasGemini5hBucket || hasActive3pBucket || hasProModelDescription
+    const plan: AccountPlan = explicitLivePlan ?? (isPro ? 'PRO' : 'FREE')
 
     const state = classifyAccount({
       gemini5hRemaining,
