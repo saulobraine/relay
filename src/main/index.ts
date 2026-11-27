@@ -2,7 +2,7 @@ import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron'
 import path from 'node:path'
 import type { AccountModelResult, RelayConfig } from '../shared/types'
 import { RelayScheduler } from './engine/scheduler'
-import { initAutoUpdater } from './engine/autoUpdater'
+import { checkForUpdates, initAutoUpdater, installUpdate } from './engine/autoUpdater'
 import { readAntigravityAccounts } from './maestri/workspaceReader'
 import { fetchAvailableAccountModels } from './quota/accountCollector'
 
@@ -147,6 +147,10 @@ function registerIpc(): void {
     mainWindow?.close()
   })
   ipcMain.handle('relay:windowIsMaximized', () => mainWindow?.isMaximized() ?? false)
+  ipcMain.handle('relay:installUpdate', () => {
+    installUpdate()
+  })
+  ipcMain.handle('relay:checkForUpdates', () => checkForUpdates(scheduler))
 }
 
 const singleLock = app.requestSingleInstanceLock()

@@ -8,6 +8,7 @@ export const MOCK_SNAPSHOT: RelaySnapshot = {
   lastFailoverDurationMs: null,
   terminalScanWarning: null,
   currentMaestroPresetAccountId: '42381C93-DBCD-4ED3-B72A-0694D839E2B1',
+  updateStatus: { state: 'idle' },
   config: {
     autoFailover: true,
     autoRebalance: false,

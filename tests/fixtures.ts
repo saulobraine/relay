@@ -33,6 +33,7 @@ export function snapshot(patch: Partial<RelaySnapshot> = {}): RelaySnapshot {
     pipePath: 'fixture', maestriConnected: true, accounts: [account()], terminals: [terminal()],
     events: [], config, lastSyncAt: null, isRefreshingQuotas: false,
     lastFailoverDurationMs: null, terminalScanWarning: null, currentMaestroPresetAccountId: null,
+    updateStatus: { state: 'idle' },
     ...patch
   }
 }

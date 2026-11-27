@@ -35,3 +35,43 @@ it('carrega dados do Electron, navega, atualiza e libera inscrições ao sair', 
   unmount()
   expect(unsubscribe).toHaveBeenCalledTimes(2)
 })
+
+it('renderiza feedback visual de atualização pronta e em download no cabeçalho', async () => {
+  const installUpdate = vi.fn().mockResolvedValue(undefined)
+  const relay = {
+    getSnapshot: vi.fn().mockResolvedValue(snapshot({
+      updateStatus: { state: 'downloaded', version: '0.2.0' }
+    })),
+    onSnapshot: vi.fn((cb) => {
+      cb(snapshot({ updateStatus: { state: 'downloaded', version: '0.2.0' } }))
+      return vi.fn()
+    }),
+    onWindowMaximized: vi.fn(() => vi.fn()),
+    windowIsMaximized: vi.fn().mockResolvedValue(false),
+    installUpdate
+  }
+  vi.stubGlobal('relay', relay)
+  const { unmount } = render(<App />)
+  const readyBtn = await screen.findByRole('button', { name: /v0.2.0 pronta · Reiniciar/ })
+  expect(readyBtn).toBeTruthy()
+  fireEvent.click(readyBtn)
+  expect(installUpdate).toHaveBeenCalledOnce()
+  unmount()
+
+  cleanup()
+
+  const relayDownloading = {
+    getSnapshot: vi.fn().mockResolvedValue(snapshot({
+      updateStatus: { state: 'downloading', version: '0.2.0' }
+    })),
+    onSnapshot: vi.fn((cb) => {
+      cb(snapshot({ updateStatus: { state: 'downloading', version: '0.2.0' } }))
+      return vi.fn()
+    }),
+    onWindowMaximized: vi.fn(() => vi.fn()),
+    windowIsMaximized: vi.fn().mockResolvedValue(false)
+  }
+  vi.stubGlobal('relay', relayDownloading)
+  render(<App />)
+  expect(await screen.findByText('Baixando v0.2.0...')).toBeTruthy()
+})

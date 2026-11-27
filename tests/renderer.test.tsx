@@ -107,3 +107,23 @@ it('renderiza os badges de plano FREE, PRO, PLUS e UNKNOWN tanto na tabela quant
   expect(gridContainer.querySelector('.badge-plan-unknown')?.textContent).toBe('UNKNOWN')
 })
 
+it('permite verificar atualizações na seção de configurações', () => {
+  const checkForUpdates = vi.fn().mockResolvedValue(undefined)
+  vi.stubGlobal('relay', { checkForUpdates })
+
+  render(
+    <LogsAndSettings
+      config={config}
+      events={[]}
+      onClearLogs={vi.fn()}
+      onUpdateConfig={vi.fn()}
+      updateStatus={{ state: 'idle' }}
+    />
+  )
+
+  const checkBtn = screen.getByRole('button', { name: 'Verificar atualizações' })
+  fireEvent.click(checkBtn)
+  expect(checkForUpdates).toHaveBeenCalledOnce()
+})
+
+

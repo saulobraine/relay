@@ -221,6 +221,31 @@ export default function App() {
               {snapshot.config.autoFailover ? 'ON' : 'OFF'}
             </span>
           </div>
+
+          {snapshot.updateStatus?.state === 'downloaded' && (
+            <>
+              <span className="topbar-divider">|</span>
+              <button
+                type="button"
+                className="update-pill update-pill-ready"
+                onClick={() => void window.relay?.installUpdate()}
+                title="Clique para reiniciar e aplicar a atualização"
+              >
+                <span className="dot dot-green" />
+                <span>v{snapshot.updateStatus.version ?? ''} pronta · Reiniciar</span>
+              </button>
+            </>
+          )}
+
+          {snapshot.updateStatus?.state === 'downloading' && (
+            <>
+              <span className="topbar-divider">|</span>
+              <div className="update-pill update-pill-downloading">
+                <span className="dot dot-blue" />
+                <span>Baixando v{snapshot.updateStatus.version ?? ''}...</span>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="topbar-right">
@@ -391,6 +416,7 @@ export default function App() {
             events={snapshot.events}
             accounts={snapshot.accounts}
             currentMaestroPresetAccountId={snapshot.currentMaestroPresetAccountId}
+            updateStatus={snapshot.updateStatus}
             onUpdateConfig={handleUpdateConfig}
             onClearLogs={async () => {
               if (window.relay) await window.relay.clearLogs()

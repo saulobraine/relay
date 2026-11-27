@@ -8,6 +8,8 @@ it('inicializa o Electron e conecta o preload aos comandos do processo principal
   const swapTerminalToBest = vi.fn()
   const updateConfig = vi.fn().mockResolvedValue({ ...config, openAtLogin: false })
   const setLoginItemSettings = vi.fn()
+  const installUpdate = vi.fn()
+  const checkForUpdates = vi.fn()
   const getSnapshot = vi.fn(() => snapshot())
   const win = {
     on: vi.fn(), loadFile: vi.fn(), loadURL: vi.fn(), webContents: { send: vi.fn() }
@@ -40,7 +42,9 @@ it('inicializa o Electron e conecta o preload aos comandos do processo principal
     }
   }))
   vi.doMock('../src/main/engine/autoUpdater', () => ({
-    initAutoUpdater: vi.fn()
+    initAutoUpdater: vi.fn(),
+    installUpdate,
+    checkForUpdates
   }))
   vi.doMock('../src/main/maestri/workspaceReader', () => ({
     readAntigravityAccounts: async () => [{ id: 'a' }]
@@ -52,7 +56,7 @@ it('inicializa o Electron e conecta o preload aos comandos do processo principal
   await import('../src/main/index')
   const { relayApi } = await import('../src/preload')
   expect(win.webContents.send).toHaveBeenCalledWith('relay:snapshot', expect.objectContaining({ config }))
-  expect(handlers.size).toBe(11)
+  expect(handlers.size).toBe(13)
   expect(await relayApi.getSnapshot()).toMatchObject({ config })
   await relayApi.refreshQuotas()
   expect(refreshCachedQuotas).toHaveBeenCalledOnce()
@@ -63,5 +67,9 @@ it('inicializa o Electron e conecta o preload aos comandos do processo principal
   expect(await relayApi.getAccountModels('a')).toMatchObject({ ok: true, models: [{ id: 'm' }] })
   expect(await relayApi.getAccountModels('ausente')).toMatchObject({ ok: false })
   expect(await relayApi.updateConfig({ openAtLogin: false })).toMatchObject({ openAtLogin: false })
+  await relayApi.installUpdate()
+  expect(installUpdate).toHaveBeenCalledOnce()
+  await relayApi.checkForUpdates()
+  expect(checkForUpdates).toHaveBeenCalledOnce()
   expect(setLoginItemSettings).toHaveBeenLastCalledWith({ openAtLogin: false, args: ['--minimized'] })
 })

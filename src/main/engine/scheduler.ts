@@ -1,6 +1,7 @@
 import { Notification } from 'electron'
 import type {
   AccountStatus,
+  AppUpdateStatus,
   MonitoredTerminal,
   RelayConfig,
   RelayEvent,
@@ -44,6 +45,7 @@ export class RelayScheduler {
   private terminalScan: { onlyActiveWorkspace: boolean; task: Promise<void> } | null = null
   private evaluatingFailover = false
   private terminalScanWarning: string | null = null
+  private updateStatus: AppUpdateStatus = { state: 'idle' }
   private listeners = new Set<(snapshot: RelaySnapshot) => void>()
 
   async init(): Promise<void> {
@@ -81,8 +83,18 @@ export class RelayScheduler {
       isRefreshingQuotas: this.quotaRefresh !== null,
       lastFailoverDurationMs: this.lastFailoverDurationMs,
       terminalScanWarning: this.terminalScanWarning,
-      currentMaestroPresetAccountId: this.currentMaestroPresetAccountId
+      currentMaestroPresetAccountId: this.currentMaestroPresetAccountId,
+      updateStatus: this.updateStatus
     }
+  }
+
+  setUpdateStatus(status: AppUpdateStatus): void {
+    this.updateStatus = status
+    this.emit()
+  }
+
+  getUpdateStatus(): AppUpdateStatus {
+    return this.updateStatus
   }
 
   private emit(): void {

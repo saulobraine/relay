@@ -26,6 +26,8 @@ export const relayApi = {
   windowToggleMaximize: (): Promise<boolean> => ipcRenderer.invoke('relay:windowToggleMaximize'),
   windowClose: (): Promise<void> => ipcRenderer.invoke('relay:windowClose'),
   windowIsMaximized: (): Promise<boolean> => ipcRenderer.invoke('relay:windowIsMaximized'),
+  installUpdate: (): Promise<void> => ipcRenderer.invoke('relay:installUpdate'),
+  checkForUpdates: (): Promise<void> => ipcRenderer.invoke('relay:checkForUpdates'),
   onWindowMaximized: (callback: (maximized: boolean) => void): (() => void) => {
     const handler = (_event: Electron.IpcRendererEvent, maximized: boolean): void => {
       callback(maximized)

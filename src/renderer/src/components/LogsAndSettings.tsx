@@ -1,13 +1,14 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useChoice } from '../usePreference'
 import { Download, Monitor, Search, Shield, Sliders, Trash2, Zap } from 'lucide-react'
-import type { AccountStatus, RelayConfig, RelayEvent } from '@shared/types'
+import type { AccountStatus, AppUpdateStatus, RelayConfig, RelayEvent } from '@shared/types'
 
 interface Props {
   config: RelayConfig
   events: RelayEvent[]
   accounts?: AccountStatus[]
   currentMaestroPresetAccountId?: string | null
+  updateStatus?: AppUpdateStatus
   onUpdateConfig: (patch: Partial<RelayConfig>) => Promise<void>
   onClearLogs: () => Promise<void>
 }
@@ -59,9 +60,11 @@ export function LogsAndSettings({
   events,
   accounts = [],
   currentMaestroPresetAccountId,
+  updateStatus,
   onUpdateConfig,
   onClearLogs
 }: Props) {
+  const [checkingUpdates, setCheckingUpdates] = useState(false)
   const [levelFilter, setLevelFilter] = useChoice<LogLevelFilter>('logs.level', 'all', ['all', 'info', 'warn', 'error', 'success'])
   const [logSearch, setLogSearch] = useState('')
   const [confirmClear, setConfirmClear] = useState(false)
@@ -116,6 +119,17 @@ export function LogsAndSettings({
       setLogMessage('Falha ao limpar os logs.')
     } finally {
       setClearing(false)
+    }
+  }
+
+  const handleCheckUpdates = async () => {
+    if (typeof window !== 'undefined' && window.relay?.checkForUpdates) {
+      setCheckingUpdates(true)
+      try {
+        await window.relay.checkForUpdates()
+      } finally {
+        setTimeout(() => setCheckingUpdates(false), 1200)
+      }
     }
   }
 
@@ -313,6 +327,41 @@ export function LogsAndSettings({
           />
         </section>
         </details>
+
+        <section className="settings-section">
+          <div className="card-header-inline">
+            <Download size={14} className="icon-cyan" />
+            <div className="card-title">Atualização do Software</div>
+          </div>
+          <div className="update-check-row">
+            <div className="update-check-info">
+              <span className="toggle-label">Versão do Relay</span>
+              <span className="toggle-desc">
+                {updateStatus?.state === 'downloaded'
+                  ? `Versão v${updateStatus.version ?? ''} pronta para instalar.`
+                  : updateStatus?.state === 'downloading'
+                    ? `Baixando nova versão v${updateStatus.version ?? ''}...`
+                    : updateStatus?.state === 'checking'
+                      ? 'Verificando atualizações...'
+                      : updateStatus?.state === 'available'
+                        ? `Nova versão v${updateStatus.version ?? ''} encontrada.`
+                        : updateStatus?.state === 'error'
+                          ? `Erro: ${updateStatus.error ?? 'Falha na verificação'}`
+                          : 'Seu Relay está configurado para atualização automática.'}
+              </span>
+            </div>
+            <button
+              type="button"
+              className="btn-action-card"
+              disabled={checkingUpdates || updateStatus?.state === 'checking' || updateStatus?.state === 'downloading'}
+              onClick={() => void handleCheckUpdates()}
+            >
+              {checkingUpdates || updateStatus?.state === 'checking'
+                ? 'Verificando…'
+                : 'Verificar atualizações'}
+            </button>
+          </div>
+        </section>
       </div>
 
       {/* RIGHT COLUMN: REAL-TIME LOG STREAM */}

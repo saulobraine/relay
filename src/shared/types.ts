@@ -8,6 +8,14 @@ export type AccountHealthState =
 
 export type AccountPlan = 'FREE' | 'PRO' | 'PLUS' | 'UNKNOWN'
 
+export type AppUpdateState = 'idle' | 'checking' | 'available' | 'downloading' | 'downloaded' | 'error'
+
+export interface AppUpdateStatus {
+  state: AppUpdateState
+  version?: string
+  error?: string
+}
+
 export interface QuotaWindowSnapshot {
   id: string
   window: '5h' | 'weekly'
@@ -110,4 +118,5 @@ export interface RelaySnapshot {
   lastFailoverDurationMs: number | null
   terminalScanWarning: string | null
   currentMaestroPresetAccountId: string | null
+  updateStatus?: AppUpdateStatus
 }

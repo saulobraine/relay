@@ -142,6 +142,54 @@ button, input, select {
   border-color: #165245;
 }
 
+.update-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.update-pill-ready {
+  background: rgba(168, 85, 247, 0.15);
+  border: 1px solid rgba(168, 85, 247, 0.45);
+  color: #d8b4fe;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
+}
+
+.update-pill-ready:hover {
+  background: rgba(168, 85, 247, 0.25);
+  border-color: rgba(168, 85, 247, 0.65);
+  color: #f3e8ff;
+}
+
+.update-pill-downloading {
+  background: #07151e;
+  border: 1px solid #0d3830;
+  color: var(--blue-sky);
+}
+
+.update-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 14px;
+  background: #0d111a;
+  border: 1px solid var(--border-card);
+  border-radius: 8px;
+}
+
+.update-check-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
 .toggle-badge {
   font-size: 10px;
   font-weight: 700;
