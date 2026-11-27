@@ -71,15 +71,21 @@ it('carrega o cache de cotas e deixa contas sem dados como desconhecidas', async
   ])
 })
 
-it('classifica contas com resetsAt 1970 no medidor 3P e sem uso como estritamente FREE', async () => {
+it('classifica conta Pro com gemini-5h mesmo com 3P em 1970, e conta Free com apenas gemini-weekly e 3P em 1970', async () => {
   await write('usage/providers/.status.json', {
     providers: [
       {
-        id: 'account-free1',
-        name: 'FreeAccount',
+        id: 'account-pro5h',
+        name: 'ProWithGemini5h',
         state: 'ready',
         meters: [
-          { id: 'Gemini Models', windows: [{ id: 'gemini-5h', usedPercent: 20 }] },
+          {
+            id: 'Gemini Models',
+            windows: [
+              { id: 'gemini-5h', usedPercent: 20 },
+              { id: 'gemini-weekly', usedPercent: 10 }
+            ]
+          },
           {
             id: 'Claude and GPT models',
             windows: [{ id: '3p-weekly', resetsAt: '1970-01-01T00:00:00.000Z', usedPercent: 0 }]
@@ -87,13 +93,14 @@ it('classifica contas com resetsAt 1970 no medidor 3P e sem uso como estritament
         ]
       },
       {
-        id: 'account-pro1',
-        name: 'ProAccountWithActiveReset',
+        id: 'account-freeweekly',
+        name: 'FreeOnlyWeekly',
         state: 'ready',
         meters: [
+          { id: 'Gemini Models', windows: [{ id: 'gemini-weekly', usedPercent: 5 }] },
           {
             id: 'Claude and GPT models',
-            windows: [{ id: '3p-weekly', resetsAt: '2026-12-05T12:00:00.000Z', usedPercent: 0 }]
+            windows: [{ id: '3p-weekly', resetsAt: '1970-01-01T00:00:00.000Z', usedPercent: 0 }]
           }
         ]
       }
@@ -101,14 +108,14 @@ it('classifica contas com resetsAt 1970 no medidor 3P e sem uso como estritament
   })
 
   const accounts = [
-    { id: 'free-1', name: 'FreeAccount', cli: 'antigravity', kind: 'signIn' },
-    { id: 'pro-1', name: 'ProAccountWithActiveReset', cli: 'antigravity', kind: 'signIn' }
+    { id: 'pro-5h', name: 'ProWithGemini5h', cli: 'antigravity', kind: 'signIn' },
+    { id: 'free-weekly', name: 'FreeOnlyWeekly', cli: 'antigravity', kind: 'signIn' }
   ]
 
   const result = await readCachedUsageStatus(accounts, new Map(), 12, 5)
   expect(result).toMatchObject([
-    { id: 'free-1', plan: 'FREE' },
-    { id: 'pro-1', plan: 'PRO' }
+    { id: 'pro-5h', plan: 'PRO' },
+    { id: 'free-weekly', plan: 'FREE' }
   ])
 })
 

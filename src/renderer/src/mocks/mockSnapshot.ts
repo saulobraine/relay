@@ -203,7 +203,7 @@ export const MOCK_SNAPSHOT: RelaySnapshot = {
       id: 'D352E73D-68B7-4D2A-B981-D99AA9D4D73B',
       name: 'saulobraine231126',
       cli: 'antigravity',
-      plan: 'UNKNOWN',
+      plan: 'PRO',
       state: 'AUTH_ERROR',
       score: -1,
       gemini5hRemaining: null,
