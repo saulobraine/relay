@@ -8,14 +8,16 @@
   <strong>Multi-account quota broker and intelligent failover watchdog for Maestri & Antigravity.</strong>
 </p>
 
-<p align="center">
-  <a href="https://github.com/saulobraine/relay/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/release-v0.1.0-06b6d4?style=for-the-badge&logo=github" alt="Release v0.1.0" /></a>
-  <a href="#"><img src="https://img.shields.io/badge/CI-passing-10b981?style=for-the-badge&logo=githubactions&logoColor=white" alt="CI Passing" /></a>
-  <a href="https://www.electronjs.org/"><img src="https://img.shields.io/badge/Electron-34.0.0-47848F?style=for-the-badge&logo=electron&logoColor=white" alt="Electron 34" /></a>
-  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 18" /></a>
-  <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.7.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript 5.7" /></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-a855f7?style=for-the-badge" alt="Licença MIT" /></a>
-</p>
+<div align="center">
+
+[![Release v0.1.0](https://img.shields.io/badge/release-v0.1.0-06b6d4?style=for-the-badge&logo=github)](https://github.com/saulobraine/relay/releases/tag/v0.1.0)
+[![CI](https://img.shields.io/badge/CI-passing-10b981?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/saulobraine/relay/actions)
+[![Electron](https://img.shields.io/badge/Electron-34.0.0-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://www.electronjs.org/)
+[![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![License MIT](https://img.shields.io/badge/license-MIT-a855f7?style=for-the-badge)](https://opensource.org/licenses/MIT)
+
+</div>
 
 ---
 
