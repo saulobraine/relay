@@ -111,6 +111,14 @@ export class RelayScheduler {
     return this.updateEvents(() => [])
   }
 
+  logEvent(
+    level: RelayEvent['level'],
+    message: string,
+    extra?: Partial<RelayEvent>
+  ): Promise<void> {
+    return this.pushEvent(level, message, extra)
+  }
+
   private updateEvents(update: (events: RelayEvent[]) => RelayEvent[]): Promise<void> {
     const write = this.eventWrite.then(async () => {
       const events = update(this.events)

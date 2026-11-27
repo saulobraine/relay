@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, Menu, nativeImage, Tray } from 'electron'
 import path from 'node:path'
 import type { AccountModelResult, RelayConfig } from '../shared/types'
 import { RelayScheduler } from './engine/scheduler'
+import { initAutoUpdater } from './engine/autoUpdater'
 import { readAntigravityAccounts } from './maestri/workspaceReader'
 import { fetchAvailableAccountModels } from './quota/accountCollector'
 
@@ -171,6 +172,7 @@ if (!singleLock) {
       mainWindow?.webContents.send('relay:snapshot', snapshot)
     })
     void scheduler.pollTerminals(false)
+    initAutoUpdater(scheduler)
   })
 
   app.on('before-quit', () => {

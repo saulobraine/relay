@@ -17,7 +17,7 @@ it('inicializa o Electron e conecta o preload aos comandos do processo principal
   vi.doMock('electron', () => ({
     app: {
       requestSingleInstanceLock: () => true, whenReady: () => Promise.resolve(),
-      on: vi.fn(), isPackaged: true, setLoginItemSettings
+      on: vi.fn(), isPackaged: true, setLoginItemSettings, getVersion: () => '0.1.0'
     },
     BrowserWindow: class { constructor() { return win } },
     Tray: class { constructor() { return tray } },
@@ -36,7 +36,11 @@ it('inicializa o Electron e conecta o preload aos comandos do processo principal
       refreshCachedQuotas = refreshCachedQuotas
       swapTerminalToBest = swapTerminalToBest
       updateConfig = updateConfig
+      logEvent = vi.fn()
     }
+  }))
+  vi.doMock('../src/main/engine/autoUpdater', () => ({
+    initAutoUpdater: vi.fn()
   }))
   vi.doMock('../src/main/maestri/workspaceReader', () => ({
     readAntigravityAccounts: async () => [{ id: 'a' }]
