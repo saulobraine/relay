@@ -8,14 +8,18 @@
   <strong>Multi-account quota broker and intelligent failover watchdog for Maestri & Antigravity.</strong>
 </p>
 
+<p align="center">
+  <em>O Relay é uma aplicação desktop nativa desenvolvida para monitorar frotas de agentes no Maestri e Google Antigravity, realizando auto-failover sem perda de contexto e roteamento inteligente entre múltiplas contas Google para mitigar limites de requisições (HTTP 429) e otimizar as janelas de 5 horas e cotas semanais.</em>
+</p>
+
 <div align="center">
 
-[![Release v0.1.0](https://img.shields.io/badge/release-v0.1.0-06b6d4?style=for-the-badge&logo=github)](https://github.com/saulobraine/relay/releases/tag/v0.1.0)
-[![CI](https://img.shields.io/badge/CI-passing-10b981?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/saulobraine/relay/actions)
-[![Electron](https://img.shields.io/badge/Electron-34.0.0-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://www.electronjs.org/)
-[![React](https://img.shields.io/badge/React-18.3.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.7.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![License MIT](https://img.shields.io/badge/license-MIT-a855f7?style=for-the-badge)](https://opensource.org/licenses/MIT)
+[![Release v0.1.0](resources/badges/release.svg)](https://github.com/saulobraine/relay/releases/tag/v0.1.0)
+[![CI](resources/badges/ci.svg)](https://github.com/saulobraine/relay/actions)
+[![Electron](resources/badges/electron.svg)](https://www.electronjs.org/)
+[![React](resources/badges/react.svg)](https://react.dev/)
+[![TypeScript](resources/badges/typescript.svg)](https://www.typescriptlang.org/)
+[![License MIT](resources/badges/license.svg)](https://opensource.org/licenses/MIT)
 
 </div>
 
