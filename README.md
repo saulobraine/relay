@@ -13,14 +13,12 @@
 </p>
 
 <div align="center">
-
-[![Release v0.1.0](resources/badges/release.svg)](https://github.com/saulobraine/relay/releases/tag/v0.1.0)
-[![CI](resources/badges/ci.svg)](https://github.com/saulobraine/relay/actions)
-[![Electron](resources/badges/electron.svg)](https://www.electronjs.org/)
-[![React](resources/badges/react.svg)](https://react.dev/)
-[![TypeScript](resources/badges/typescript.svg)](https://www.typescriptlang.org/)
-[![License MIT](resources/badges/license.svg)](https://opensource.org/licenses/MIT)
-
+  <a href="https://github.com/saulobraine/relay/releases/tag/v0.1.0"><img src="resources/badges/release.svg" alt="Release v0.1.0" /></a>
+  <a href="https://github.com/saulobraine/relay/actions"><img src="resources/badges/ci.svg" alt="CI" /></a>
+  <a href="https://www.electronjs.org/"><img src="resources/badges/electron.svg" alt="Electron" /></a>
+  <a href="https://react.dev/"><img src="resources/badges/react.svg" alt="React" /></a>
+  <a href="https://www.typescriptlang.org/"><img src="resources/badges/typescript.svg" alt="TypeScript" /></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="resources/badges/license.svg" alt="License MIT" /></a>
 </div>
 
 ---
