@@ -2,7 +2,7 @@ import type { AccountStatus, MonitoredTerminal, RelayConfig, RelaySnapshot } fro
 
 export function account(patch: Partial<AccountStatus> = {}): AccountStatus {
   return {
-    id: 'a', name: 'Alpha', cli: 'agy', state: 'READY', score: 80,
+    id: 'a', name: 'Alpha', cli: 'agy', plan: 'PRO', state: 'READY', score: 80,
     gemini5hRemaining: 80, geminiWeeklyRemaining: 90,
     gemini5hResetsAt: null, geminiWeeklyResetsAt: null, thirdParty5hRemaining: null,
     thirdPartyWeeklyRemaining: null, activeTerminalCount: 0, lastCheckedAt: null,

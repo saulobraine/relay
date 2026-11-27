@@ -113,7 +113,14 @@ export function AccountsGrid({
                 <tr key={acc.id}>
                   <td>
                     <div className="table-account-cell">
-                      <span className="table-acc-name">{acc.name}</span>
+                      <div className="table-acc-title-row">
+                        <span className="table-acc-name">{acc.name}</span>
+                        {acc.plan && (
+                          <span className={`badge-plan badge-plan-${acc.plan.toLowerCase()}`}>
+                            {acc.plan}
+                          </span>
+                        )}
+                      </div>
                       <span className="table-acc-id">ID: {acc.id.slice(0, 10).toUpperCase()}...</span>
                       {isMaestroPreset && (
                         <span className="badge-maestro-inline">
@@ -221,7 +228,14 @@ export function AccountsGrid({
             {/* Header: Title + Status Pill */}
             <div className="card-header-row">
               <div className="card-title-group">
-                <span className="account-title">{acc.name}</span>
+                <div className="account-title-row">
+                  <span className="account-title">{acc.name}</span>
+                  {acc.plan && (
+                    <span className={`badge-plan badge-plan-${acc.plan.toLowerCase()}`}>
+                      {acc.plan}
+                    </span>
+                  )}
+                </div>
                 <div className="account-submeta">
                   Score:{' '}
                   <span className={isScore100 ? 'score-val-100' : 'score-val-plain'}>

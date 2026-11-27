@@ -6,6 +6,8 @@ export type AccountHealthState =
   | 'AUTH_ERROR'
   | 'UNKNOWN'
 
+export type AccountPlan = 'FREE' | 'PRO' | 'PLUS' | 'UNKNOWN'
+
 export interface QuotaWindowSnapshot {
   id: string
   window: '5h' | 'weekly'
@@ -27,6 +29,7 @@ export interface AccountStatus {
   id: string
   name: string
   cli: string
+  plan?: AccountPlan
   state: AccountHealthState
   score: number
   gemini5hRemaining: number | null

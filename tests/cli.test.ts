@@ -23,15 +23,24 @@ it('interpreta cotas da CLI e usa o timeout da configuração', async () => {
   ] } } }))
   expect(await fetchLiveAccountUsage(acc, 2, 12, 5, 37)).toMatchObject({
     state: 'DRAINING', gemini5hRemaining: 12, gemini5hResetsAt: null,
-    geminiWeeklyRemaining: 85, thirdPartyWeeklyRemaining: 42, activeTerminalCount: 2
+    geminiWeeklyRemaining: 85, thirdPartyWeeklyRemaining: 42, activeTerminalCount: 2,
+    plan: 'FREE'
   })
   expect(execFile).toHaveBeenCalledWith(expect.any(String), ['-p', '/usage', '--output-format', 'json'],
     expect.objectContaining({ timeout: 37000 }), expect.any(Function))
 })
 
+it('identifica plano PRO na CLI quando buckets de terceiros possuem reset time ativo', async () => {
+  output(JSON.stringify({ command: { data: { groups: [
+    { name: 'Gemini Models', buckets: [{ id: 'gemini-5h', remaining_fraction: 0.9 }] },
+    { name: 'Claude and GPT models', buckets: [{ id: '3p-weekly', remaining_fraction: 0.5, reset_time: '2026-03-01T12:00:00Z' }] }
+  ] } } }))
+  expect(await fetchLiveAccountUsage(acc, 0, 12, 5, 20)).toMatchObject({ plan: 'PRO' })
+})
+
 it('marca erro de autenticação na coleta de cotas', async () => {
   execFile.mockImplementationOnce((_file, _args, _options, callback) => callback(new Error('Eligibility check failed')))
-  expect(await fetchLiveAccountUsage(acc, 0, 12, 5, 20)).toMatchObject({ state: 'AUTH_ERROR', score: -1 })
+  expect(await fetchLiveAccountUsage(acc, 0, 12, 5, 20)).toMatchObject({ state: 'AUTH_ERROR', score: -1, plan: 'UNKNOWN' })
 })
 
 it('extrai modelos por conta, ignora ruído e distingue falha de autenticação', async () => {

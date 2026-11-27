@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { promisify } from 'node:util'
-import type { AccountModelResult, AccountStatus, AvailableAccountModel } from '../../shared/types'
+import type { AccountModelResult, AccountPlan, AccountStatus, AvailableAccountModel } from '../../shared/types'
 import {
   getDefaultAgyCliPath,
   getMaestriLocalAccountsRoot,
@@ -116,10 +116,15 @@ export async function readCachedUsageStatus(
       minWeeklyPercent
     })
 
+    const plan: AccountPlan = (p as any)?.plan
+      ? ((p as any).plan.toUpperCase() as AccountPlan)
+      : (p?.meters?.some((m) => m.id === 'Claude and GPT models' && (m.windows?.length ?? 0) > 0) ? 'PRO' : 'FREE')
+
     return {
       id: acc.id,
       name: acc.name,
       cli: acc.cli,
+      plan,
       state,
       score: computeAccountScore({
         state,
@@ -217,6 +222,15 @@ export async function fetchLiveAccountUsage(
     const geminiWeeklyRemaining = normalizePercent(gWeekly?.remaining_fraction)
     const gemini5hRemaining = g5h ? normalizePercent(g5h.remaining_fraction) : 100
 
+    const has3pBuckets = Boolean(
+      tpGroup?.buckets &&
+      tpGroup.buckets.length > 0 &&
+      tpGroup.buckets.some(
+        (b) => b.reset_time && !b.reset_time.startsWith('1970-01-01')
+      )
+    )
+    const plan: AccountPlan = has3pBuckets ? 'PRO' : 'FREE'
+
     const state = classifyAccount({
       gemini5hRemaining,
       geminiWeeklyRemaining,
@@ -229,6 +243,7 @@ export async function fetchLiveAccountUsage(
       id: acc.id,
       name: acc.name,
       cli: acc.cli,
+      plan,
       state,
       score: computeAccountScore({
         state,
@@ -255,6 +270,7 @@ export async function fetchLiveAccountUsage(
       id: acc.id,
       name: acc.name,
       cli: acc.cli,
+      plan: 'UNKNOWN',
       state: isAuthErr ? 'AUTH_ERROR' : 'UNKNOWN',
       score: -1,
       gemini5hRemaining: null,

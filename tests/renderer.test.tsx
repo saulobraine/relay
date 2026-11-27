@@ -79,3 +79,31 @@ it('consulta o catálogo da conta selecionada e mostra o resultado da integraç�
   expect(await screen.findByText('Modelo da conta')).toBeTruthy()
   expect(getAccountModels).toHaveBeenCalledWith('a')
 })
+
+it('renderiza os badges de plano FREE, PRO, PLUS e UNKNOWN tanto na tabela quanto no grid', () => {
+  const accounts = [
+    account({ id: 'acc-pro', name: 'Conta Pro', plan: 'PRO' }),
+    account({ id: 'acc-free', name: 'Conta Free', plan: 'FREE' }),
+    account({ id: 'acc-plus', name: 'Conta Plus', plan: 'PLUS' }),
+    account({ id: 'acc-unk', name: 'Conta Desconhecida', plan: 'UNKNOWN' })
+  ]
+
+  const { container: tableContainer } = render(
+    <AccountsGrid viewMode="table" accounts={accounts} excludedAccountIds={[]} onToggleExclude={vi.fn()} />
+  )
+  expect(tableContainer.querySelector('.badge-plan-pro')?.textContent).toBe('PRO')
+  expect(tableContainer.querySelector('.badge-plan-free')?.textContent).toBe('FREE')
+  expect(tableContainer.querySelector('.badge-plan-plus')?.textContent).toBe('PLUS')
+  expect(tableContainer.querySelector('.badge-plan-unknown')?.textContent).toBe('UNKNOWN')
+
+  cleanup()
+
+  const { container: gridContainer } = render(
+    <AccountsGrid viewMode="grid" accounts={accounts} excludedAccountIds={[]} onToggleExclude={vi.fn()} />
+  )
+  expect(gridContainer.querySelector('.badge-plan-pro')?.textContent).toBe('PRO')
+  expect(gridContainer.querySelector('.badge-plan-free')?.textContent).toBe('FREE')
+  expect(gridContainer.querySelector('.badge-plan-plus')?.textContent).toBe('PLUS')
+  expect(gridContainer.querySelector('.badge-plan-unknown')?.textContent).toBe('UNKNOWN')
+})
+

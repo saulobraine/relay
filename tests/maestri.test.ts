@@ -51,15 +51,23 @@ it('lê terminal do workspace e de seu andar, ignorando nós que não são termi
 it('carrega o cache de cotas e deixa contas sem dados como desconhecidas', async () => {
   await write('usage/providers/.status.json', { providers: [{
     id: 'account-a1', name: 'Alpha', state: 'ready',
-    meters: [{ id: 'Gemini Models', windows: [{ id: 'gemini-5h', usedPercent: 27.5 }] }]
+    meters: [
+      { id: 'Gemini Models', windows: [{ id: 'gemini-5h', usedPercent: 27.5 }] },
+      { id: 'Claude and GPT models', windows: [{ id: '3p-weekly', usedPercent: 10 }] }
+    ]
+  }, {
+    id: 'account-c3', name: 'Charlie', state: 'ready', plan: 'PLUS',
+    meters: [{ id: 'Gemini Models', windows: [{ id: 'gemini-5h', usedPercent: 10 }] }]
   }] })
   const accounts = [
     { id: 'A-1', name: 'Alpha', cli: 'antigravity', kind: 'signIn' },
-    { id: 'B-2', name: 'Beta', cli: 'antigravity', kind: 'signIn' }
+    { id: 'B-2', name: 'Beta', cli: 'antigravity', kind: 'signIn' },
+    { id: 'C-3', name: 'Charlie', cli: 'antigravity', kind: 'signIn' }
   ]
   expect(await readCachedUsageStatus(accounts, new Map([['a-1', 3]]), 12, 5)).toMatchObject([
-    { id: 'A-1', gemini5hRemaining: 72.5, activeTerminalCount: 3, state: 'READY' },
-    { id: 'B-2', gemini5hRemaining: null, state: 'UNKNOWN' }
+    { id: 'A-1', gemini5hRemaining: 72.5, activeTerminalCount: 3, state: 'READY', plan: 'PRO' },
+    { id: 'B-2', gemini5hRemaining: null, state: 'UNKNOWN', plan: 'FREE' },
+    { id: 'C-3', plan: 'PLUS', state: 'READY' }
   ])
 })
 
