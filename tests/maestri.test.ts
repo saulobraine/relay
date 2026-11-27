@@ -71,6 +71,47 @@ it('carrega o cache de cotas e deixa contas sem dados como desconhecidas', async
   ])
 })
 
+it('classifica contas com resetsAt 1970 no medidor 3P e sem uso como estritamente FREE', async () => {
+  await write('usage/providers/.status.json', {
+    providers: [
+      {
+        id: 'account-free1',
+        name: 'FreeAccount',
+        state: 'ready',
+        meters: [
+          { id: 'Gemini Models', windows: [{ id: 'gemini-5h', usedPercent: 20 }] },
+          {
+            id: 'Claude and GPT models',
+            windows: [{ id: '3p-weekly', resetsAt: '1970-01-01T00:00:00.000Z', usedPercent: 0 }]
+          }
+        ]
+      },
+      {
+        id: 'account-pro1',
+        name: 'ProAccountWithActiveReset',
+        state: 'ready',
+        meters: [
+          {
+            id: 'Claude and GPT models',
+            windows: [{ id: '3p-weekly', resetsAt: '2026-12-05T12:00:00.000Z', usedPercent: 0 }]
+          }
+        ]
+      }
+    ]
+  })
+
+  const accounts = [
+    { id: 'free-1', name: 'FreeAccount', cli: 'antigravity', kind: 'signIn' },
+    { id: 'pro-1', name: 'ProAccountWithActiveReset', cli: 'antigravity', kind: 'signIn' }
+  ]
+
+  const result = await readCachedUsageStatus(accounts, new Map(), 12, 5)
+  expect(result).toMatchObject([
+    { id: 'free-1', plan: 'FREE' },
+    { id: 'pro-1', plan: 'PRO' }
+  ])
+})
+
 it('reconhece o pipe de Maestri e tolera falha de leitura', async () => {
   const readdir = vi.spyOn(fs, 'readdir')
   readdir.mockImplementationOnce(async () => ['outro', 'maestri-abc123'] as never)

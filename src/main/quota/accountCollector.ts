@@ -116,9 +116,18 @@ export async function readCachedUsageStatus(
       minWeeklyPercent
     })
 
-    const plan: AccountPlan = (p as any)?.plan
+    const hasActive3pWindow = Boolean(
+      thirdPartyMeter?.windows?.some((w) => {
+        const hasValidReset = Boolean(w.resetsAt && !w.resetsAt.startsWith('1970-01-01'))
+        const hasUsage = typeof w.usedPercent === 'number' && w.usedPercent > 0
+        return hasValidReset || hasUsage
+      })
+    )
+
+    const explicitPlan = (p as any)?.plan
       ? ((p as any).plan.toUpperCase() as AccountPlan)
-      : (p?.meters?.some((m) => m.id === 'Claude and GPT models' && (m.windows?.length ?? 0) > 0) ? 'PRO' : 'FREE')
+      : null
+    const plan: AccountPlan = explicitPlan ?? (hasActive3pWindow ? 'PRO' : 'FREE')
 
     return {
       id: acc.id,
@@ -222,14 +231,20 @@ export async function fetchLiveAccountUsage(
     const geminiWeeklyRemaining = normalizePercent(gWeekly?.remaining_fraction)
     const gemini5hRemaining = g5h ? normalizePercent(g5h.remaining_fraction) : 100
 
-    const has3pBuckets = Boolean(
+    const hasActive3pBucket = Boolean(
       tpGroup?.buckets &&
       tpGroup.buckets.length > 0 &&
-      tpGroup.buckets.some(
-        (b) => b.reset_time && !b.reset_time.startsWith('1970-01-01')
-      )
+      tpGroup.buckets.some((b) => {
+        const hasValidReset = Boolean(b.reset_time && !b.reset_time.startsWith('1970-01-01'))
+        const hasUsedPercent = typeof (b as any).usedPercent === 'number' && (b as any).usedPercent > 0
+        return hasValidReset || hasUsedPercent
+      })
     )
-    const plan: AccountPlan = has3pBuckets ? 'PRO' : 'FREE'
+
+    const explicitLivePlan = ((data as any)?.plan || (data as any)?.command?.data?.plan)
+      ? (String((data as any).plan || (data as any).command?.data?.plan).toUpperCase() as AccountPlan)
+      : null
+    const plan: AccountPlan = explicitLivePlan ?? (hasActive3pBucket ? 'PRO' : 'FREE')
 
     const state = classifyAccount({
       gemini5hRemaining,
